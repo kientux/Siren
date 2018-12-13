@@ -80,9 +80,9 @@ public final class Siren: NSObject {
     /// Overrides the tint color for UIAlertController.
     public var alertControllerTintColor: UIColor?
 
-    /// When this is set, the alert will only show up if the current version has already been released for X days.
-    /// Defaults to 1 day to avoid an issue where Apple updates the JSON faster than the app binary propogates to the App Store.
-    public var showAlertAfterCurrentVersionHasBeenReleasedForDays: Int = 1
+    /// When this is set, the alert will only show up if the current version has already been released for X hours.
+    /// Defaults to 24 hours to avoid an issue where Apple updates the JSON faster than the app binary propogates to the App Store.
+    public var showAlertAfterCurrentVersionHasBeenReleasedForHours: Int = 24
 
     /// The current version of your app that is available for download on the App Store
     public internal(set) var currentAppStoreVersion: String?
@@ -223,12 +223,12 @@ private extension Siren {
         }
 
         guard let currentVersionReleaseDate = model.results.first?.currentVersionReleaseDate,
-            let daysSinceRelease = Date.days(since: currentVersionReleaseDate) else {
+            let hoursSinceRelease = Date.hours(since: currentVersionReleaseDate) else {
             return
         }
 
-        guard daysSinceRelease >= showAlertAfterCurrentVersionHasBeenReleasedForDays else {
-            let message = "Your app has been released for \(daysSinceRelease) days, but Siren cannot prompt the user until \(showAlertAfterCurrentVersionHasBeenReleasedForDays) days have passed."
+        guard hoursSinceRelease >= showAlertAfterCurrentVersionHasBeenReleasedForHours else {
+            let message = "Your app has been released for \(hoursSinceRelease) hours, but Siren cannot prompt the user until \(showAlertAfterCurrentVersionHasBeenReleasedForHours) hours have passed."
             self.printMessage(message)
             return
         }
